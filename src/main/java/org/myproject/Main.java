@@ -13,7 +13,7 @@ public class Main {
 
 
      String markdownCode = GraphUtils.createGraph("org.myproject.source");
-        FileUtils.writeToMarkdownFile("src/markdown/mermaid1.md", markdownCode);
+        FileUtils.writeToMarkdownFile("src/markdown/mermaid12.md", markdownCode);
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files\\nodejs\\npx.cmd", "mmdc", "-i", "src/markdown/mermaid1.md", "-o", "src/output/mermaid.pdf");
             processBuilder.inheritIO();
