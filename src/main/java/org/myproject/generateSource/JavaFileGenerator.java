@@ -8,13 +8,14 @@ import java.util.Scanner;
 public class JavaFileGenerator {
     private final FileHandler fileHandler = new FileHandler();
 
+
     public void run() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Bienvenue dans l'application de génération de fichiers Java !");
         System.out.println("Entrez 'exit' pour quitter à tout moment.");
 
         while (true) {
-            // Affichage des options de type d'entité
+            // Étape 1 : Choix du type d'entité
             System.out.println("Choisissez un type :");
             System.out.println("1. Classe");
             System.out.println("2. Interface");
@@ -52,6 +53,26 @@ public class JavaFileGenerator {
                 System.out.println("Nom invalide. Assurez-vous que le nom est un identifiant Java valide.");
                 continue;
             }
+            //ajouter annotations
+
+
+            List<String> annotations = new ArrayList<>();
+            System.out.println("Voulez-vous ajouter des annotations ? (y/n) : ");
+            if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
+                // Demander quelles annotations ajouter
+                System.out.println("Entrez le nom de l'annotation (ex: SuperClass, ChildClass) : ");
+                String annotationName = scanner.nextLine().trim();
+
+                if (annotationName.equalsIgnoreCase("ChildClass")) {
+                    // Pour l'annotation @ChildClass, on doit demander la superclasse
+                    System.out.println("Entrez le nom de la superclasse : ");
+                    String superClass = scanner.nextLine().trim();
+                    annotations.add("@" + annotationName + "(superClass = \"" + superClass + "\")");
+                } else {
+                    annotations.add("@" + annotationName);  // Pour d'autres annotations sans paramètres
+                }
+            }
+
 
             // Étape 3 : Relations (extends/implements)
             List<String> relations = new ArrayList<>();
@@ -78,8 +99,14 @@ public class JavaFileGenerator {
                 InputHandler.collectAttributes(scanner, attributes);
             }
 
+            // Étape 5 : Collecte des méthodes
+            List<String> methods = new ArrayList<>();
+            if (entityType == EntityType.CLASS || entityType == EntityType.ABSTRACT_CLASS || entityType == EntityType.INTERFACE) {
+                MethodHandler.collectMethods(scanner, methods);
+            }
+
             // Génération du fichier
-            fileHandler.generateFile(entityType, name, relations, attributes);
+            fileHandler.generateFile(entityType, name, relations, attributes, methods, annotations);
         }
     }
 

@@ -17,25 +17,27 @@ public class ClassUtils {
     //vérification que le chemin est exist
     if (stream == null) {
       System.out.println("Le répertoire (Path ) n'a pas été trouvé: " + stream);
+      System.exit(1);
       return Collections.emptySet();
     }
-
-    BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-    return reader
-      .lines()
-      .filter(line -> line.endsWith(".class"))
-      .map(line -> getClass(line, packageName))
-      .collect(Collectors.toSet());
-  }
-
-  private static Class getClass(String className, String packageName) {
-    try {
-      return Class.forName(
-        packageName + "." + className.substring(0, className.lastIndexOf('.'))
-      );
-    } catch (ClassNotFoundException e) {
-      // handle the exception
+      BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+      return reader
+              .lines()
+              .filter(line -> line.endsWith(".class"))
+              .map(line -> getClass(line, packageName))
+              .collect(Collectors.toSet());
     }
-    return null;
-  }
+
+    private static Class getClass (String className, String packageName){
+      try {
+        return Class.forName(
+                packageName + "." + className.substring(0, className.lastIndexOf('.'))
+        );
+      } catch (ClassNotFoundException e) {
+        // handle the exception
+        System.out.println("Class " + className + " not found");
+      }
+      return null;
+    }
+
 }

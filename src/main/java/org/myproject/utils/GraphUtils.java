@@ -59,7 +59,7 @@ public class GraphUtils {
       }
     }
 
-    for (Class clasz : listOfClasses) {
+  /* for (Class clasz : listOfClasses) {
       res.append("class " + clasz.getSimpleName() + "{\n");
       if (clasz.isInterface()) {
         res.append("<<interface>>\n");
@@ -81,6 +81,35 @@ public class GraphUtils {
       }
       res.append("}\n");
     }
+*/
+    for (Class clasz : listOfClasses) {
+      res.append("class " + clasz.getSimpleName() + "{\n");
+
+      // Vérifiez si la classe est vide (pas de champs ni de méthodes)
+      boolean isEmpty = clasz.getDeclaredFields().length == 0 && clasz.getDeclaredMethods().length == 0;
+
+      // Si la classe est vide, ne rien ajouter mais quand même la représenter
+      if (isEmpty) {
+        res.append("  \n");
+      }
+
+      // Ajout des champs si la classe n'est pas vide
+      for (Field field : clasz.getDeclaredFields()) {
+        char viz = Modifier.toString(field.getModifiers()).equals("public") ? '+' : '-';
+        res.append(viz + field.getType().getSimpleName() + " " + field.getName() + "\n");
+      }
+
+      // Ajout des méthodes si la classe n'est pas vide
+      for (Method method : clasz.getDeclaredMethods()) {
+        if (method.getDeclaringClass() == Object.class) continue;
+        char viz = Modifier.toString(method.getModifiers()).equals("public") ? '+' : '-';
+        res.append(viz + method.getName() + "()\n");
+      }
+
+      res.append("}\n");
+    }
+
+
     res.append("\n");
     res.append("```");
     return res.toString();
